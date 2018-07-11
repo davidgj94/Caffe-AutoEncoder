@@ -1,0 +1,39 @@
+layer {
+  name: "data"
+  type: "Python"
+  top: "data"
+  python_param {
+    module: "load_labels"
+    layer: "OneHotLayer"
+    param_str: "{\'labels_dir\': \'/home/davidgj/projects_v2/SegNet-Tutorial/roads/ROADS/trainannot\', \'seed\': \'0\'}"
+  }
+}
+layer{
+    name: "reshape1"
+    type: "Reshape"
+    bottom: "data"
+    top: "flattened"
+    reshape_param {
+        shape {
+        dim: 0
+        dim: -1
+        dim: 1
+        dim: 1
+        }
+    }
+}
+layer{
+    name: "reshape2"
+    type: "Reshape"
+    bottom: "flattened"
+    top: "data_"
+    reshape_param {
+        shape {
+        dim: 0 
+        dim: 4
+        dim: 192
+        dim: 256
+        }
+    }
+}
+
