@@ -985,15 +985,7 @@ layer {
 }
 layer {
   bottom: "conv1_1_D"
-  top: "conv1_1_D"
+  top: "pred"
   name: "sigmoid"
   type: "Sigmoid"
-}
-layer {
-  name: "loss"
-  type: "EuclideanLoss"
-  bottom: "data"
-  bottom: "conv1_1_D"
-  top: "loss"
-  loss_weight: 1
 }

@@ -93,7 +93,7 @@ class OneHotLayer(caffe.Layer):
     def load_label(self, label_path):
         
         label = np.array(Image.open(label_path))
-        one_hot_label = np.dstack([(label==0), (label==1), (label==2), (label==3)]).astype(np.uint8)
+        one_hot_label = np.dstack([(label==1), (label==2), (label==3)]).astype(np.float32)
         one_hot_label = one_hot_label.transpose((2,0,1))
         return one_hot_label
         

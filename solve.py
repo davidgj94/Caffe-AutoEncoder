@@ -1,4 +1,4 @@
-import caffe
+import caffe; caffe.set_mode_gpu()
 import numpy as np
 import os
 import sys
@@ -18,18 +18,36 @@ except:
 
 def plot_label(label):
     label = np.squeeze(label)
+    label = np.around(label)
     label_ = np.zeros((192,256))
-    label_[label[1,:,:] == 1] = 1
-    label_[label[2,:,:] == 1] = 2
-    label_[label[3,:,:] == 1] = 3
+    label_[label[0,:,:] == 1] = 1
+    label_[label[1,:,:] == 1] = 2
+    label_[label[2,:,:] == 1] = 3
     plt.imshow(label_)
     plt.show()
 
-net = caffe.Net('Models/train_prueba.prototxt', caffe.TEST)
-net.forward()
-in_label = net.blobs['data'].data
-mid_ = net.blobs['flattened'].data
-out_label = net.blobs['data_'].data
-plot_label(in_label)
-plot_label(out_label)
-print "done"
+solver = caffe.SGDSolver('Models/solver.prototxt')
+inference_net = caffe.Net('Models/inference_v2.prototxt', caffe.TEST)
+for i in range(5):
+    inference_net.forward()
+    in_label = inference_net.blobs['data'].data
+    out_label = inference_net.blobs['pred'].data
+    plot_label(in_label)
+    plot_label(out_label)
+    solver.step(170)
+    inference_net.share_with(solver.net)
+    inference_net.forward()
+    in_label = inference_net.blobs['data'].data
+    out_label = inference_net.blobs['pred'].data
+    plot_label(in_label)
+    plot_label(out_label)
+ 
+#net = caffe.Net('Models/train_prueba.prototxt', caffe.TEST)
+#net.forward()
+#in_label = net.blobs['data'].data
+#mid_ = net.blobs['flattened'].data
+#out_label = net.blobs['data_'].data
+#plot_label(in_label)
+#plot_label(out_label)
+#pdb.set_trace()
+#print "done"

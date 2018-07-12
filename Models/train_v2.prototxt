@@ -471,74 +471,10 @@ layer {
     stride: 2
   }
 }
-layer{
-    name: "reshape1"
-    type: "Reshape"
-    bottom: "pool5"
-    top: "flattened"
-    reshape_param {
-        shape {
-        dim: 0
-        dim: -1
-        }
-    }
-}
-layer {
-  name: "fc1"
-  type: "InnerProduct"
-  param { lr_mult: 1 decay_mult: 1 }
-  param { lr_mult: 2 decay_mult: 0 }
-  inner_product_param {
-    num_output: 64
-    weight_filler {
-      type: "gaussian"
-      std: 0.01
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
-  }
-  bottom: "flattened"
-  top: "fc1"
-}
-layer {
-  name: "fc2"
-  type: "InnerProduct"
-  param { lr_mult: 1 decay_mult: 1 }
-  param { lr_mult: 2 decay_mult: 0 }
-  inner_product_param {
-    num_output: 24576
-    weight_filler {
-      type: "gaussian"
-      std: 0.01
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
-  }
-  bottom: "fc1"
-  top: "fc2"
-}
-layer{
-    name: "reshape2"
-    type: "Reshape"
-    bottom: "fc2"
-    top: "pool5_reshape"
-    reshape_param {
-        shape {
-        dim: 0 
-        dim: 512
-        dim: 6
-        dim: 8
-        }
-    }
-}
 layer {
   name: "upsample5"
   type: "Upsample"
-  bottom: "pool5_reshape"
+  bottom: "pool5"
   top: "pool5_D"
   bottom: "pool5_mask"
   upsample_param {
