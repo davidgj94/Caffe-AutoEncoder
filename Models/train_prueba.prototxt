@@ -5,7 +5,7 @@ layer {
   python_param {
     module: "load_labels"
     layer: "OneHotLayer"
-    param_str: "{\'labels_dir\': \'/home/davidgj/projects_v2/SegNet-Tutorial/roads/ROADS/trainannot\', \'seed\': \'0\'}"
+    param_str: "{\'labels_dir\': \'/home/davidgj/projects_v2/SegNet-Tutorial/roads/ROADS/trainannot\', \'seed\': \'0\', \'binary_mask\': \'true\'}"
   }
 }
 layer{
@@ -28,7 +28,7 @@ layer{
     reshape_param {
         shape {
         dim: 0 
-        dim: 4
+        dim: 1
         dim: 192
         dim: 256
         }

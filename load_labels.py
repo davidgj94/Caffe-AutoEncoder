@@ -45,6 +45,10 @@ class OneHotLayer(caffe.Layer):
         self.indices = ['/' + '/'.join(glob.parts[1:]) for glob in globs]
         shuffle(self.indices)
         self.idx = 0
+        if 'binary_mask' in params:
+            self.binary_mask = bool(params['binary_mask'])
+        else:
+            self.binary_mask = False
         
         # two tops: data and label
         if len(top) != 1:
@@ -74,14 +78,13 @@ class OneHotLayer(caffe.Layer):
         self.label = self.load_label(self.indices[self.idx])
         top[0].reshape(1, *self.label.shape)
 
-
     def forward(self, bottom, top):
         # assign output
         top[0].data[...] = self.label
         
         if self.idx == (len(self.indices) - 1):
             self.idx = 0
-            self.indices = shuffle(self.indices)
+            shuffle(self.indices)
         else:
             self.idx += 1
 
@@ -93,7 +96,14 @@ class OneHotLayer(caffe.Layer):
     def load_label(self, label_path):
         
         label = np.array(Image.open(label_path))
-        one_hot_label = np.dstack([(label==1), (label==2), (label==3)]).astype(np.float32)
-        one_hot_label = one_hot_label.transpose((2,0,1))
+        if self.binary_mask:
+            one_hot_label = np.zeros((1,192,256), dtype=np.float32)
+            one_hot_label[0,label == 1] = 1.0
+            one_hot_label[0,label == 2] = 1.0
+            one_hot_label[0,label == 3] = 1.0
+            #pdb.set_trace()
+        else:
+            one_hot_label = np.dstack([(label==1), (label==2), (label==3)]).astype(np.float32)
+            one_hot_label = one_hot_label.transpose((2,0,1))
         return one_hot_label
         
